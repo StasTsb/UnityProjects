@@ -40,7 +40,7 @@ public class PlayerMovement : MonoBehaviour
             DoJump = true;       
         
         }
-        //раскладка
+        //раскладка клав
     }
     private void FixedUpdate()
     {
