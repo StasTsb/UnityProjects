@@ -9,7 +9,7 @@ public class PlayerMovement : MonoBehaviour
     public float RunSpeed = 500f;
     // скорость бега
     public float StrafeSpeed = 500f;
-    // скорость (право,лево)
+    // скорость смещения (право,лево)
     public float JumpForce = 10f;
     //сила прыжка
 
