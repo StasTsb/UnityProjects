@@ -7,33 +7,34 @@ public class PlayerController : MonoBehaviour
     private CharacterController controller;
     private Animator anim;
     private Vector3 dir;
+
     [SerializeField] private float speed;
     [SerializeField] private float jumpForce;
     [SerializeField] private float gravity;
     [SerializeField] private GameObject losePanel;
-
-    
-
+        
     private int lineToMove = 1;
-    public float lineDistance = 4;
-
+    public float lineDistance = 100;
+           
     void Start()
     {
         anim = GetComponentInChildren<Animator>();
         controller = GetComponent<CharacterController>();
+        losePanel.SetActive(false);
+        Time.timeScale = 1;
     }
 
     private void Update()
     {
         if (SwipeController.swipeRight)
         {
-            if (lineToMove < 2)
+            if (lineToMove <= 5)
                 lineToMove++;
         }
 
         if (SwipeController.swipeLeft)
         {
-            if (lineToMove > 0)
+            if (lineToMove >= -3)
                 lineToMove--;
         }
 
@@ -47,27 +48,49 @@ public class PlayerController : MonoBehaviour
             anim.SetTrigger("isRunning");
 
         Vector3 targetPosition = transform.position.z * transform.forward + transform.position.y * transform.up;
-        if (lineToMove == 0)
+
+        if(lineToMove <= 0)
             targetPosition += Vector3.left * lineDistance;
-        else if (lineToMove == 2)
+        if (lineToMove <= -1)
+            targetPosition += Vector3.left * lineDistance;
+        if (lineToMove <= -2)
+            targetPosition += Vector3.left * lineDistance;
+        if (lineToMove <= -3)
+            targetPosition += Vector3.left * lineDistance;
+        if (lineToMove <= -5)
+            targetPosition += Vector3.left * lineDistance;
+        if (lineToMove <= -6)
+            targetPosition += Vector3.left * lineDistance;
+        if(lineToMove <= -7)
+            targetPosition += Vector3.left * lineDistance;
+        if (lineToMove >= 2)
+            targetPosition += Vector3.right * lineDistance;
+        if (lineToMove >= 3)
+            targetPosition += Vector3.right * lineDistance;
+        if (lineToMove >= 4)
+            targetPosition += Vector3.right * lineDistance;
+        if (lineToMove >= 5)
+            targetPosition += Vector3.right * lineDistance;
+        if(lineToMove >= 6)
+            targetPosition += Vector3.right * lineDistance;
+        if(lineToMove >= 7)
+            targetPosition += Vector3.right * lineDistance;
+        if(lineToMove >= 8)
             targetPosition += Vector3.right * lineDistance;
 
         if (transform.position == targetPosition)
             return;
+
         Vector3 diff = targetPosition - transform.position;
         Vector3 moveDir = diff.normalized * 25 * Time.deltaTime;
+
         if (moveDir.sqrMagnitude < diff.sqrMagnitude)
             controller.Move(moveDir);
         else
             controller.Move(diff);
 
         speed += 0.1f * Time.deltaTime;
-
-        if (speed <= 1)  // ЗАКРЫТИЕ ИГРЫ
-        {
-            
-            Application.Quit();    
-        }
+                 
     }
 
     private void Jump()
@@ -81,8 +104,8 @@ public class PlayerController : MonoBehaviour
         dir.z = speed;
         dir.y += gravity * Time.fixedDeltaTime;
         controller.Move(dir * Time.fixedDeltaTime);
+      
     }
-
     private void OnControllerColliderHit(ControllerColliderHit hit)
     {
         if (hit.gameObject.tag == "obstacle")
@@ -91,4 +114,5 @@ public class PlayerController : MonoBehaviour
             Time.timeScale = 0;
         }
     }
+
 }
