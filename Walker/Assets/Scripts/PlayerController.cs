@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class PlayerController : MonoBehaviour
 {
@@ -10,8 +11,11 @@ public class PlayerController : MonoBehaviour
 
     [SerializeField] private float speed;
     [SerializeField] private float jumpForce;
+    [SerializeField] public float flipForce;
     [SerializeField] private float gravity;
+    [SerializeField] private int coins;
     [SerializeField] private GameObject losePanel;
+    [SerializeField] private Text coinsText;
         
     private int lineToMove = 1;
     public float lineDistance = 100;
@@ -42,6 +46,12 @@ public class PlayerController : MonoBehaviour
         {
             if (controller.isGrounded)
                 Jump();
+        }
+
+        if (SwipeController.swipeDown)
+        {
+            if (controller.isGrounded)
+                Flip();
         }
 
         if (controller.isGrounded)
@@ -99,6 +109,12 @@ public class PlayerController : MonoBehaviour
         anim.SetTrigger("isJumping");
     }
 
+    private void Flip()
+    {
+        dir.y = flipForce;
+        anim.SetTrigger("isFlipping");
+    }
+
     void FixedUpdate()
     {
         dir.z = speed;
@@ -112,6 +128,15 @@ public class PlayerController : MonoBehaviour
         {
             losePanel.SetActive(true);
             Time.timeScale = 0;
+        }
+    }
+    private void OnTriggerEnter(Collider other)
+    {
+        if (other.gameObject.tag == "coins")
+        {
+            coins++;
+            coinsText.text = coins.ToString();
+            Destroy(other.gameObject);
         }
     }
 
