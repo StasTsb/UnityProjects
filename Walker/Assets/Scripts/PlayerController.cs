@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.SceneManagement;
 
 public class PlayerController : MonoBehaviour
 {
@@ -16,7 +17,7 @@ public class PlayerController : MonoBehaviour
     [SerializeField] private int coins;
     [SerializeField] private GameObject losePanel;
     [SerializeField] private Text coinsText;
-        
+            
     private int lineToMove = 1;
     public float lineDistance = 100;
            
@@ -92,17 +93,16 @@ public class PlayerController : MonoBehaviour
             return;
 
         Vector3 diff = targetPosition - transform.position;
-        Vector3 moveDir = diff.normalized * 25 * Time.deltaTime;
+        Vector3 moveDir = diff.normalized * 75 * Time.deltaTime;
 
         if (moveDir.sqrMagnitude < diff.sqrMagnitude)
             controller.Move(moveDir);
         else
             controller.Move(diff);
 
-        speed += 0.1f * Time.deltaTime;
+        speed += 0.1f * Time.deltaTime;       
                  
     }
-
     private void Jump()
     {
         dir.y = jumpForce;
@@ -137,7 +137,7 @@ public class PlayerController : MonoBehaviour
             coins++;
             coinsText.text = coins.ToString();
             Destroy(other.gameObject);
-        }
+        }               
     }
-
+          
 }
