@@ -15,6 +15,8 @@ public class PlayerController : MonoBehaviour
     [SerializeField] public float flipForce;
     [SerializeField] private float gravity;
     [SerializeField] private int coins;
+    //NEWNEWNEW
+    [SerializeField] private int health;
     [SerializeField] private GameObject losePanel;
     [SerializeField] private Text coinsText;
             
@@ -27,6 +29,9 @@ public class PlayerController : MonoBehaviour
         controller = GetComponent<CharacterController>();
         losePanel.SetActive(false);
         Time.timeScale = 1;
+        //NEW
+        coins = PlayerPrefs.GetInt("coinN");
+        coinsText.text = coins.ToString();
     }
 
     private void Update()
@@ -128,7 +133,7 @@ public class PlayerController : MonoBehaviour
         {
             losePanel.SetActive(true);
             Time.timeScale = 0;
-        }
+        }        
     }
     private void OnTriggerEnter(Collider other)
     {
@@ -137,7 +142,21 @@ public class PlayerController : MonoBehaviour
             coins++;
             coinsText.text = coins.ToString();
             Destroy(other.gameObject);
+            //NEWNEWN
+            PlayerPrefs.SetInt("coinN", coins);
         }               
     }
-          
+    //NEWNEWNEWNENWE
+    public void change()
+    {        
+        if (coins >= 500)
+        {
+            health++;            
+            coins=-500;
+        }
+    }
+    public void video()
+    {                  
+      coins =+100;        
+    }
 }
