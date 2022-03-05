@@ -16,7 +16,6 @@ public class PlayerController : MonoBehaviour
     [SerializeField] private float gravity;
     [SerializeField] private int coins;
     //NEWNEWNEW
-    [SerializeField] private int health;
     [SerializeField] private GameObject losePanel;
     [SerializeField] private Text coinsText;
             
@@ -146,17 +145,5 @@ public class PlayerController : MonoBehaviour
             PlayerPrefs.SetInt("coinN", coins);
         }               
     }
-    //NEWNEWNEWNENWE
-    public void change()
-    {        
-        if (coins >= 500)
-        {
-            health++;            
-            coins=-500;
-        }
-    }
-    public void video()
-    {                  
-      coins =+100;        
-    }
+    
 }
