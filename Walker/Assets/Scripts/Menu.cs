@@ -5,25 +5,24 @@ using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
 public class Menu : MonoBehaviour
-{
-    //new
+{    
     [SerializeField] private Text coinsText;
     [SerializeField] private Text healthText;
-    [SerializeField] private int coins;
-    [SerializeField] private int health;
-
+    [SerializeField] private int coins = PlayerPrefs.GetInt("coinN");
+    [SerializeField] private int health = PlayerPrefs.GetInt("healtH");
+    //NEW
+    
     private void Start()
     {
         int coins = PlayerPrefs.GetInt("coinN");
+        int health = PlayerPrefs.GetInt("healtH");
         coinsText.text = coins.ToString();        
         healthText.text = health.ToString();
-
     }
     public void PlayGame()
     {
         SceneManager.LoadScene(1);
     }
-
     public void QuiteGame()
     {
         Application.Quit();
@@ -32,27 +31,31 @@ public class Menu : MonoBehaviour
     {
         SceneManager.LoadScene(2);
     }
-
     public void BackMenu()
     {
         SceneManager.LoadScene(0);
     }
-
-    //NEWNEWNEWNENWE
+        
     public void Change()
     {
-        if (coins >= 10)
+        int coins = PlayerPrefs.GetInt("coinN");
+        int health = PlayerPrefs.GetInt("healtH");
+        if (coins>= 500)
         {
             health++;
-            coins =-10;
-            //coinsText.text = coins.ToString();
-            //healthText.text = coins.ToString();
-        }
+            coins -= 500;
+        }                    
+            healthText.text = health.ToString();
+            PlayerPrefs.SetInt("healtH", health);            
+            
+            coinsText.text = coins.ToString();
+            PlayerPrefs.SetInt("coinN", coins);          
     }
     public void Video()
-    {        
+    {
         int coins = PlayerPrefs.GetInt("coinN");
-        coins += 100;
+        coins += 50;
         coinsText.text = coins.ToString();        
+        PlayerPrefs.SetInt("coinN", coins);
     }
 }

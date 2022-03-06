@@ -15,10 +15,12 @@ public class PlayerController : MonoBehaviour
     [SerializeField] public float flipForce;
     [SerializeField] private float gravity;
     [SerializeField] private int coins;
-    //NEWNEWNEW
+    [SerializeField] private int health;
+
     [SerializeField] private GameObject losePanel;
     [SerializeField] private Text coinsText;
-            
+    [SerializeField] private Text healthText;
+
     private int lineToMove = 1;
     public float lineDistance = 100;
            
@@ -28,9 +30,12 @@ public class PlayerController : MonoBehaviour
         controller = GetComponent<CharacterController>();
         losePanel.SetActive(false);
         Time.timeScale = 1;
-        //NEW
+        
         coins = PlayerPrefs.GetInt("coinN");
         coinsText.text = coins.ToString();
+
+        health = PlayerPrefs.GetInt("healtH");
+        healthText.text = health.ToString();
     }
 
     private void Update()
@@ -104,7 +109,7 @@ public class PlayerController : MonoBehaviour
         else
             controller.Move(diff);
 
-        speed += 0.1f * Time.deltaTime;       
+        speed += 0.1f * Time.deltaTime;   
                  
     }
     private void Jump()
@@ -123,8 +128,7 @@ public class PlayerController : MonoBehaviour
     {
         dir.z = speed;
         dir.y += gravity * Time.fixedDeltaTime;
-        controller.Move(dir * Time.fixedDeltaTime);
-      
+        controller.Move(dir * Time.fixedDeltaTime);      
     }
     private void OnControllerColliderHit(ControllerColliderHit hit)
     {
@@ -141,9 +145,8 @@ public class PlayerController : MonoBehaviour
             coins++;
             coinsText.text = coins.ToString();
             Destroy(other.gameObject);
-            //NEWNEWN
+            
             PlayerPrefs.SetInt("coinN", coins);
         }               
-    }
-    
+    }    
 }
