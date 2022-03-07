@@ -3,15 +3,17 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.EventSystems;
+using UnityEngine.UI;
 
 public class Restart : MonoBehaviour
 {
-    [SerializeField] private GameObject PausePanel;
-    //NEWNEWNEWNEWNENWE
+    [SerializeField] private GameObject PausePanel;    
     [SerializeField] private GameObject LoosePanel;
     [SerializeField] private Transform player;
     [SerializeField] private Transform respawnPoint;
-    //nenwenenwnenwnewnenw
+
+    [SerializeField] private int health = PlayerPrefs.GetInt("healtH");
+    [SerializeField] private Text healthText; 
 
     public void RestartLevel()
     {
@@ -32,17 +34,24 @@ public class Restart : MonoBehaviour
     {
         PausePanel.SetActive(true);
         Time.timeScale = 0;
-    }
-    //NEWNEWNEWNENWENWENWENWENWENENWENWEN
+    }    
     public void Respawn()
-    {
-        LoosePanel.SetActive(false);
-        SceneManager.GetActiveScene();
-        Time.timeScale = 1;
-        player.transform.position = respawnPoint.transform.position;
-        Physics.SyncTransforms();
-    }
+    {        
+        int health = PlayerPrefs.GetInt("healtH");
+        if (health >= 1)
+        {
+            health--;
 
+            LoosePanel.SetActive(false);
+            SceneManager.GetActiveScene();
+            Time.timeScale = 1;
+
+            player.transform.position = respawnPoint.transform.position;
+            Physics.SyncTransforms();
+        }
+        healthText.text = health.ToString();
+        PlayerPrefs.SetInt("healtH", health);        
+    }
 }
 
 
