@@ -22,19 +22,9 @@ public class Menu : MonoBehaviour
     }
     public void PlayGame()
     {
-        buttonsound.Play();
-        int priv = PlayerPrefs.GetInt("prview");
-        if (priv == 0)
-        {
-            priv += 10;
-            SceneManager.LoadScene(3);
-        }
-        else
-        {
-            priv--;
-            SceneManager.LoadScene(1);
-        }
-        PlayerPrefs.SetInt("prview", priv);
+        buttonsound.Play();       
+        SceneManager.LoadScene(3);
+              
     }
     public void QuiteGame()
     {
