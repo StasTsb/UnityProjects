@@ -21,25 +21,84 @@ public class PlayerController : MonoBehaviour
     [SerializeField] private Text coinsText;
     [SerializeField] private Text healthText;
 
+    [SerializeField] private AudioSource backgroundmusic;
+    [SerializeField] private AudioSource backgroundmusicloosepanel;
+    
+    private AudioSource audioSource;
+    public AudioSource countsound;
+
     private int lineToMove = 1;
     public float lineDistance = 100;
-           
+
+    public int respawnplatform;      
+
+    public GameObject Firstimgcount;
+    public GameObject Secondimgcount;
+    public GameObject Thirdimgcount;
+    public GameObject Fourimgcount;
+
+    public GameObject Pausebutton;
+
     void Start()
     {
-        anim = GetComponentInChildren<Animator>();
-        controller = GetComponent<CharacterController>();
-        losePanel.SetActive(false);
         Time.timeScale = 1;
-        
+
+        anim = GetComponentInChildren<Animator>();
+        anim.GetComponent<Animator>().enabled = false;
+
         coins = PlayerPrefs.GetInt("coinN");
         coinsText.text = coins.ToString();
 
         health = PlayerPrefs.GetInt("healtH");
         healthText.text = health.ToString();
-    }
 
-    private void Update()
+        respawnplatform = 1;
+        PlayerPrefs.SetInt("respawnplatform", respawnplatform);
+
+        audioSource = GetComponent<AudioSource>();
+        backgroundmusicloosepanel.Stop();
+        backgroundmusic.Play();
+
+        losePanel.SetActive(false);
+
+        Firstimgcount.SetActive(false);
+        Secondimgcount.SetActive(false);
+        Thirdimgcount.SetActive(false);
+        Fourimgcount.SetActive(false);
+
+        Pausebutton.SetActive(false);
+
+        StartCoroutine(CountCoroutine());
+    }
+    IEnumerator CountCoroutine()
     {
+        countsound.Play();
+        
+        yield return new WaitForSeconds(0.20f);
+        Firstimgcount.SetActive(true);
+        yield return new WaitForSeconds(0.70f);
+        Destroy(Firstimgcount);
+        yield return new WaitForSeconds(0.20f);
+        Secondimgcount.SetActive(true);
+        yield return new WaitForSeconds(0.70f);
+        Destroy(Secondimgcount);
+        yield return new WaitForSeconds(0.20f);
+        Thirdimgcount.SetActive(true);
+        yield return new WaitForSeconds(0.70f);
+        Destroy(Thirdimgcount);
+        yield return new WaitForSeconds(0.20f);      
+        Fourimgcount.SetActive(true);
+        yield return new WaitForSeconds(0.70f);
+        Destroy(Fourimgcount);
+
+        countsound.Stop();
+        Pausebutton.SetActive(true);
+
+        anim.GetComponent<Animator>().enabled = true;        
+        controller = GetComponent<CharacterController>();            
+    }
+    private void Update()
+    {        
         if (SwipeController.swipeRight)
         {
             if (lineToMove <= 5)
@@ -109,44 +168,80 @@ public class PlayerController : MonoBehaviour
         else
             controller.Move(diff);
 
-        speed += 0.1f * Time.deltaTime;   
-                 
+        speed += 0.1f * Time.deltaTime;                  
     }
     private void Jump()
     {
         dir.y = jumpForce;
         anim.SetTrigger("isJumping");
     }
-
     private void Flip()
     {
         dir.y = flipForce;
         anim.SetTrigger("isFlipping");
     }
-
     void FixedUpdate()
     {
         dir.z = speed;
         dir.y += gravity * Time.fixedDeltaTime;
         controller.Move(dir * Time.fixedDeltaTime);      
     }
-    private void OnControllerColliderHit(ControllerColliderHit hit)
+
+    private void OnTriggerEnter(Collider other)
     {
-        if (hit.gameObject.tag == "obstacle")
+        if (other.gameObject.tag == "obstacle")
         {
             losePanel.SetActive(true);
             Time.timeScale = 0;
-        }        
-    }
-    private void OnTriggerEnter(Collider other)
-    {
+            backgroundmusic.Pause();
+            backgroundmusicloosepanel.Play();
+        } 
+
         if (other.gameObject.tag == "coins")
         {
             coins++;
             coinsText.text = coins.ToString();
-            Destroy(other.gameObject);
-            
+            Destroy(other.gameObject);            
             PlayerPrefs.SetInt("coinN", coins);
-        }               
+            audioSource.Play();
+        }
+
+        if (other.gameObject.tag == "respawngem1")
+        {
+            lineToMove = 1;
+        }
+        if (other.gameObject.tag == "respawngem2")
+        {
+            lineToMove = 5;
+        }
+        if (other.gameObject.tag == "respawngem3")
+        {
+            lineToMove = 1;
+        }
+        if (other.gameObject.tag == "respawngem4")
+        {
+            lineToMove = -1;
+        }
+        if (other.gameObject.tag == "respawngem5")
+        {
+            lineToMove = -1;
+        }
+        if (other.gameObject.tag == "respawngem6")
+        {
+            lineToMove = -1;
+        }
+        if (other.gameObject.tag == "respawngem7")
+        {
+            lineToMove = -1;
+        }
+        if (other.gameObject.tag == "respawngem8")
+        {
+            lineToMove = 2;
+        }
+        if (other.gameObject.tag == "RPPL")
+        {
+            respawnplatform++;
+            PlayerPrefs.SetInt("respawnplatform", respawnplatform);
+        }
     }    
 }
