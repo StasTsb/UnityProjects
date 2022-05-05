@@ -27,14 +27,18 @@ public class Restart : MonoBehaviour
     [SerializeField] private AudioSource backgroundmusicloosepanel;
     [SerializeField] private AudioSource buttonsound;
 
+    public GameObject pausebutton;
+
     public void Start()
     {
+       pausebutton.SetActive(true);
        backgroundmusic.Play();
        backgroundmusicloosepanel.Pause();
     }
     
     public void RestartLevel()
-    {   buttonsound.Play();
+    {   
+        buttonsound.Play();
         backgroundmusicloosepanel.Pause();        
         SceneManager.LoadScene(1);
     }
@@ -51,9 +55,11 @@ public class Restart : MonoBehaviour
         Time.timeScale = 1;        
         backgroundmusic.Play();
         backgroundmusicloosepanel.Pause();
+        pausebutton.SetActive(true);
     }
     public void Pause()
     {
+        pausebutton.SetActive(false);
         PausePanel.SetActive(true);
         Time.timeScale = 0;
         backgroundmusic.Pause();
@@ -61,6 +67,7 @@ public class Restart : MonoBehaviour
     }    
     public void Respawn()
     {
+        pausebutton.SetActive(true);
         buttonsound.Play();
         int health = PlayerPrefs.GetInt("healtH");
         if (health >= 1)
