@@ -67,9 +67,5 @@ public class Menu : MonoBehaviour
         coinsText.text = coins.ToString();        
         PlayerPrefs.SetInt("coinN", coins);
     }
-    public void Skip()
-    {
-        buttonsound.Play();
-        SceneManager.LoadScene(1);        
-    }
+    
 }
