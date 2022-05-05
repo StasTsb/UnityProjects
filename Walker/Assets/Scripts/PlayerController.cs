@@ -191,6 +191,7 @@ public class PlayerController : MonoBehaviour
     {
         if (other.gameObject.tag == "obstacle")
         {
+            Pausebutton.SetActive(false);
             losePanel.SetActive(true);
             Time.timeScale = 0;
             backgroundmusic.Pause();
