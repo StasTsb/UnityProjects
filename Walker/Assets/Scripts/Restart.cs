@@ -27,20 +27,25 @@ public class Restart : MonoBehaviour
     [SerializeField] private AudioSource backgroundmusicloosepanel;
     [SerializeField] private AudioSource buttonsound;
 
-    public GameObject pausebutton;
+    public GameObject Pausebutton;
 
     public void Start()
     {
-       pausebutton.SetActive(true);
        backgroundmusic.Play();
        backgroundmusicloosepanel.Pause();
+       Pausebutton.SetActive(true);
     }
     
     public void RestartLevel()
-    {   
-        buttonsound.Play();
+    {   buttonsound.Play();
         backgroundmusicloosepanel.Pause();        
         SceneManager.LoadScene(1);
+    }
+    public void RestartLevelDistance()
+    {
+        buttonsound.Play();
+        backgroundmusicloosepanel.Pause();
+        SceneManager.LoadScene(4);
     }
     public void ToMenu()
     {
@@ -51,32 +56,33 @@ public class Restart : MonoBehaviour
     public void Play()
     {        
         PausePanel.SetActive(false);
+        Pausebutton.SetActive(true);
         SceneManager.GetActiveScene();
         Time.timeScale = 1;        
         backgroundmusic.Play();
         backgroundmusicloosepanel.Pause();
-        pausebutton.SetActive(true);
     }
     public void Pause()
     {
-        pausebutton.SetActive(false);
         PausePanel.SetActive(true);
+        Pausebutton.SetActive(false);
         Time.timeScale = 0;
         backgroundmusic.Pause();
         backgroundmusicloosepanel.Play();        
     }    
     public void Respawn()
     {
-        pausebutton.SetActive(true);
         buttonsound.Play();
         int health = PlayerPrefs.GetInt("healtH");
         if (health >= 1)
         {
+            LoosePanel.SetActive(false);
+            Pausebutton.SetActive(true);
+
             backgroundmusic.Play();
             backgroundmusicloosepanel.Pause();
             health--;
-
-            LoosePanel.SetActive(false);
+            
             SceneManager.GetActiveScene();
             Time.timeScale = 1;
 
