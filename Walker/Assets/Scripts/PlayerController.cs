@@ -18,6 +18,9 @@ public class PlayerController : MonoBehaviour
     [SerializeField] private int health;
 
     [SerializeField] private GameObject losePanel;
+    [SerializeField] private GameObject endgamepanel;
+    [SerializeField] private GameObject endgamebestpanel;
+
     [SerializeField] private Text coinsText;
     [SerializeField] private Text healthText;
 
@@ -26,11 +29,12 @@ public class PlayerController : MonoBehaviour
     
     private AudioSource audioSource;
     public AudioSource countsound;
+    public AudioSource winsound;
 
     private int lineToMove = 1;
     public float lineDistance = 100;
 
-    public int respawnplatform;      
+    private int respawnplatform;      
 
     public GameObject Firstimgcount;
     public GameObject Secondimgcount;
@@ -38,6 +42,11 @@ public class PlayerController : MonoBehaviour
     public GameObject Fourimgcount;
 
     public GameObject Pausebutton;
+
+    [SerializeField] private float timeStart;
+    [SerializeField] public Text textTimer;
+    [SerializeField] private float timeresult;
+    [SerializeField] public Text textresult;    
 
     void Start()
     {
@@ -57,9 +66,11 @@ public class PlayerController : MonoBehaviour
 
         audioSource = GetComponent<AudioSource>();
         backgroundmusicloosepanel.Stop();
-        backgroundmusic.Play();
+        backgroundmusic.Play();        
 
         losePanel.SetActive(false);
+        endgamepanel.SetActive(false);
+        endgamebestpanel.SetActive(false);
 
         Firstimgcount.SetActive(false);
         Secondimgcount.SetActive(false);
@@ -67,6 +78,10 @@ public class PlayerController : MonoBehaviour
         Fourimgcount.SetActive(false);
 
         Pausebutton.SetActive(false);
+
+        textTimer.text = timeStart.ToString("F2");
+        textresult.text = timeresult.ToString("F2");
+        timeresult = PlayerPrefs.GetFloat("timresult");
 
         StartCoroutine(CountCoroutine());
     }
@@ -95,7 +110,8 @@ public class PlayerController : MonoBehaviour
         Pausebutton.SetActive(true);
 
         anim.GetComponent<Animator>().enabled = true;        
-        controller = GetComponent<CharacterController>();            
+        controller = GetComponent<CharacterController>();
+       
     }
     private void Update()
     {        
@@ -168,7 +184,7 @@ public class PlayerController : MonoBehaviour
         else
             controller.Move(diff);
 
-        speed += 0.1f * Time.deltaTime;                  
+        speed += 0.1f * Time.deltaTime;        
     }
     private void Jump()
     {
@@ -184,19 +200,50 @@ public class PlayerController : MonoBehaviour
     {
         dir.z = speed;
         dir.y += gravity * Time.fixedDeltaTime;
-        controller.Move(dir * Time.fixedDeltaTime);      
+        controller.Move(dir * Time.fixedDeltaTime);
+        
+        timeStart += Time.deltaTime;
+        textTimer.text = timeStart.ToString("F2");
     }
 
     private void OnTriggerEnter(Collider other)
     {
         if (other.gameObject.tag == "obstacle")
         {
-            Pausebutton.SetActive(false);
             losePanel.SetActive(true);
+            Pausebutton.SetActive(false);
             Time.timeScale = 0;
             backgroundmusic.Pause();
             backgroundmusicloosepanel.Play();
-        } 
+        }
+
+        if (other.gameObject.tag == "EndGameTime")
+        {
+            PlayerPrefs.GetFloat("timresult", timeresult);
+            if (timeresult < timeStart)
+            {
+                timeresult = timeStart;
+                PlayerPrefs.SetFloat("timresult", timeresult);
+
+                winsound.Play();
+                backgroundmusic.Pause();                
+
+                endgamebestpanel.SetActive(true);
+                Pausebutton.SetActive(false);
+
+                Time.timeScale = 0;                
+            }
+            else 
+            {
+                endgamepanel.SetActive(true);
+                Pausebutton.SetActive(false);
+
+                Time.timeScale = 0;
+
+                backgroundmusic.Pause();
+                backgroundmusicloosepanel.Play();
+            }
+        }
 
         if (other.gameObject.tag == "coins")
         {
