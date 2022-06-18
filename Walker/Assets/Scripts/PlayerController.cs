@@ -180,7 +180,6 @@ public class PlayerController : MonoBehaviour
 
         speed += 0.1f * Time.deltaTime;
 
-        Debug.Log("Время старта:"+ timeStart + "Рекорд:" +timeRecord);
     }
     private void Jump()
     {
