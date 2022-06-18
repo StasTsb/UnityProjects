@@ -201,6 +201,17 @@ public class PlayerController : MonoBehaviour
         textTimeStart.text = timeStart.ToString("F2");
     }
 
+    public void Nitro()
+    {
+        StartCoroutine(NitroCoroutine());
+        IEnumerator NitroCoroutine()
+        {
+            speed += 100;
+            yield return new WaitForSeconds(0.50f);
+            speed -= 100;
+        }                  
+    }   
+
     private void OnTriggerEnter(Collider other)
     {
         if (other.gameObject.tag == "obstacle")
