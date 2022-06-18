@@ -18,23 +18,20 @@ public class PlayerController : MonoBehaviour
     [SerializeField] private int health;
 
     [SerializeField] private GameObject losePanel;
-    [SerializeField] private GameObject endgamepanel;
-    [SerializeField] private GameObject endgamebestpanel;
 
     [SerializeField] private Text coinsText;
     [SerializeField] private Text healthText;
 
     [SerializeField] private AudioSource backgroundmusic;
     [SerializeField] private AudioSource backgroundmusicloosepanel;
-    
+
     private AudioSource audioSource;
     public AudioSource countsound;
-    public AudioSource winsound;
 
     private int lineToMove = 1;
     public float lineDistance = 100;
 
-    private int respawnplatform;      
+    private int respawnplatform;
 
     public GameObject Firstimgcount;
     public GameObject Secondimgcount;
@@ -44,9 +41,10 @@ public class PlayerController : MonoBehaviour
     public GameObject Pausebutton;
 
     [SerializeField] private float timeStart;
-    [SerializeField] public Text textTimer;
-    [SerializeField] private float timeresult;
-    [SerializeField] public Text textresult;    
+    [SerializeField] public Text textTimeStart;
+
+    [SerializeField] private float timeRecord;
+    [SerializeField] public Text textTimeRecord;
 
     void Start()
     {
@@ -68,9 +66,7 @@ public class PlayerController : MonoBehaviour
         backgroundmusicloosepanel.Stop();
         backgroundmusic.Play();        
 
-        losePanel.SetActive(false);
-        endgamepanel.SetActive(false);
-        endgamebestpanel.SetActive(false);
+        losePanel.SetActive(false);       
 
         Firstimgcount.SetActive(false);
         Secondimgcount.SetActive(false);
@@ -79,9 +75,8 @@ public class PlayerController : MonoBehaviour
 
         Pausebutton.SetActive(false);
 
-        textTimer.text = timeStart.ToString("F2");
-        textresult.text = timeresult.ToString("F2");
-        timeresult = PlayerPrefs.GetFloat("timresult");
+        textTimeStart.text = timeStart.ToString("F2");
+        timeRecord = PlayerPrefs.GetFloat("timerec");
 
         StartCoroutine(CountCoroutine());
     }
@@ -110,8 +105,7 @@ public class PlayerController : MonoBehaviour
         Pausebutton.SetActive(true);
 
         anim.GetComponent<Animator>().enabled = true;        
-        controller = GetComponent<CharacterController>();
-       
+        controller = GetComponent<CharacterController>();       
     }
     private void Update()
     {        
@@ -184,7 +178,9 @@ public class PlayerController : MonoBehaviour
         else
             controller.Move(diff);
 
-        speed += 0.1f * Time.deltaTime;        
+        speed += 0.1f * Time.deltaTime;
+
+        Debug.Log("Время старта:"+ timeStart + "Рекорд:" +timeRecord);
     }
     private void Jump()
     {
@@ -201,9 +197,9 @@ public class PlayerController : MonoBehaviour
         dir.z = speed;
         dir.y += gravity * Time.fixedDeltaTime;
         controller.Move(dir * Time.fixedDeltaTime);
-        
+
         timeStart += Time.deltaTime;
-        textTimer.text = timeStart.ToString("F2");
+        textTimeStart.text = timeStart.ToString("F2");
     }
 
     private void OnTriggerEnter(Collider other)
@@ -219,29 +215,18 @@ public class PlayerController : MonoBehaviour
 
         if (other.gameObject.tag == "EndGameTime")
         {
-            PlayerPrefs.GetFloat("timresult", timeresult);
-            if (timeresult < timeStart)
+            PlayerPrefs.SetFloat("timest", timeStart);
+            PlayerPrefs.GetFloat("timerec");
+
+            if (timeRecord >= timeStart)
             {
-                timeresult = timeStart;
-                PlayerPrefs.SetFloat("timresult", timeresult);
-
-                winsound.Play();
-                backgroundmusic.Pause();                
-
-                endgamebestpanel.SetActive(true);
-                Pausebutton.SetActive(false);
-
-                Time.timeScale = 0;                
+                timeRecord = timeStart;
+                PlayerPrefs.SetFloat("timerec", timeRecord);
+                SceneManager.LoadScene(5);
             }
-            else 
+            else
             {
-                endgamepanel.SetActive(true);
-                Pausebutton.SetActive(false);
-
-                Time.timeScale = 0;
-
-                backgroundmusic.Pause();
-                backgroundmusicloosepanel.Play();
+                SceneManager.LoadScene(6);
             }
         }
 
