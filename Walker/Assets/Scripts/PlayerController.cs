@@ -24,6 +24,7 @@ public class PlayerController : MonoBehaviour
 
     [SerializeField] private AudioSource backgroundmusic;
     [SerializeField] private AudioSource backgroundmusicloosepanel;
+    [SerializeField] private AudioSource rocketsound;
 
     private AudioSource audioSource;
     public AudioSource countsound;
@@ -40,11 +41,13 @@ public class PlayerController : MonoBehaviour
 
     public GameObject Pausebutton;
 
+    public GameObject NTR;
+
     [SerializeField] private float timeStart;
     [SerializeField] public Text textTimeStart;
 
     [SerializeField] private float timeRecord;
-    [SerializeField] public Text textTimeRecord;
+    [SerializeField] public Text textTimeRecord;  
 
     void Start()
     {
@@ -63,7 +66,7 @@ public class PlayerController : MonoBehaviour
         PlayerPrefs.SetInt("respawnplatform", respawnplatform);
 
         audioSource = GetComponent<AudioSource>();
-        backgroundmusicloosepanel.Stop();
+        backgroundmusicloosepanel.Pause();
         backgroundmusic.Play();        
 
         losePanel.SetActive(false);       
@@ -74,6 +77,8 @@ public class PlayerController : MonoBehaviour
         Fourimgcount.SetActive(false);
 
         Pausebutton.SetActive(false);
+
+        NTR.SetActive(false);
 
         textTimeStart.text = timeStart.ToString("F2");
         timeRecord = PlayerPrefs.GetFloat("timerec");
@@ -134,7 +139,7 @@ public class PlayerController : MonoBehaviour
         }
 
         if (controller.isGrounded)
-            anim.SetTrigger("isRunning");
+            anim.SetTrigger("isRunning");           
 
         Vector3 targetPosition = transform.position.z * transform.forward + transform.position.y * transform.up;
 
@@ -178,8 +183,8 @@ public class PlayerController : MonoBehaviour
         else
             controller.Move(diff);
 
-        speed += 0.1f * Time.deltaTime;
-
+        speed += 0.1f * Time.deltaTime;     
+            
     }
     private void Jump()
     {
@@ -189,7 +194,7 @@ public class PlayerController : MonoBehaviour
     private void Flip()
     {
         dir.y = flipForce;
-        anim.SetTrigger("isFlipping");
+        anim.SetTrigger("isFlipping");        
     }
     void FixedUpdate()
     {
@@ -203,12 +208,16 @@ public class PlayerController : MonoBehaviour
 
     public void Nitro()
     {
+        rocketsound.Play();
         StartCoroutine(NitroCoroutine());
         IEnumerator NitroCoroutine()
-        {
+        {           
+            NTR.SetActive(true);
             speed += 100;
             yield return new WaitForSeconds(0.50f);
             speed -= 100;
+            yield return new WaitForSeconds(0.50f);
+            NTR.SetActive(false);
         }                  
     }   
 
@@ -232,11 +241,11 @@ public class PlayerController : MonoBehaviour
             {
                 timeRecord = timeStart;
                 PlayerPrefs.SetFloat("timerec", timeRecord);
-                SceneManager.LoadScene(5);
+                SceneManager.LoadScene(3);
             }
             else
             {
-                SceneManager.LoadScene(6);
+                SceneManager.LoadScene(4);
             }
         }
 
