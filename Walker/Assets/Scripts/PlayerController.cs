@@ -40,6 +40,7 @@ public class PlayerController : MonoBehaviour
     public GameObject Fourimgcount;
 
     public GameObject Pausebutton;
+    public GameObject Nitrobutton;
 
     public GameObject NTR;
 
@@ -77,6 +78,7 @@ public class PlayerController : MonoBehaviour
         Fourimgcount.SetActive(false);
 
         Pausebutton.SetActive(false);
+        Nitrobutton.SetActive(false);
 
         NTR.SetActive(false);
 
@@ -108,6 +110,7 @@ public class PlayerController : MonoBehaviour
 
         countsound.Stop();
         Pausebutton.SetActive(true);
+        Nitrobutton.SetActive(true);
 
         anim.GetComponent<Animator>().enabled = true;        
         controller = GetComponent<CharacterController>();       
@@ -227,6 +230,7 @@ public class PlayerController : MonoBehaviour
         {
             losePanel.SetActive(true);
             Pausebutton.SetActive(false);
+            Nitrobutton.SetActive(false);
             Time.timeScale = 0;
             backgroundmusic.Pause();
             backgroundmusicloosepanel.Play();
