@@ -214,8 +214,7 @@ public class PlayerController : MonoBehaviour
     }
 
     public void Nitro()
-    {
-        int coins = PlayerPrefs.GetInt("coinN");
+    {        
         if(coins >= 10) 
         {
             rocketsound.Play();
@@ -235,6 +234,7 @@ public class PlayerController : MonoBehaviour
                 PlayerPrefs.SetInt("coinN", coins);
             }            
         }
+        else { backgroundmusicloosepanel.Play(); }
     }   
 
     private void OnTriggerEnter(Collider other)
