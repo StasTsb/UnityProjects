@@ -48,7 +48,9 @@ public class PlayerController : MonoBehaviour
     [SerializeField] public Text textTimeStart;
 
     [SerializeField] private float timeRecord;
-    [SerializeField] public Text textTimeRecord;  
+    [SerializeField] public Text textTimeRecord;
+
+    public GameObject PlusMinusCoinNitro;
 
     void Start()
     {
@@ -81,6 +83,8 @@ public class PlayerController : MonoBehaviour
         Nitrobutton.SetActive(false);
 
         NTR.SetActive(false);
+
+        PlusMinusCoinNitro.SetActive(false);
 
         textTimeStart.text = timeStart.ToString("F2");
         timeRecord = PlayerPrefs.GetFloat("timerec");
@@ -211,17 +215,26 @@ public class PlayerController : MonoBehaviour
 
     public void Nitro()
     {
-        rocketsound.Play();
-        StartCoroutine(NitroCoroutine());
-        IEnumerator NitroCoroutine()
-        {           
-            NTR.SetActive(true);
-            speed += 100;
-            yield return new WaitForSeconds(0.50f);
-            speed -= 100;
-            yield return new WaitForSeconds(0.50f);
-            NTR.SetActive(false);
-        }                  
+        int coins = PlayerPrefs.GetInt("coinN");
+        if(coins >= 10) 
+        {
+            rocketsound.Play();
+            StartCoroutine(NitroCoroutine());
+            IEnumerator NitroCoroutine()
+            {
+                NTR.SetActive(true);
+                speed += 100;
+                PlusMinusCoinNitro.SetActive(true);
+                yield return new WaitForSeconds(0.50f);
+                speed -= 100;
+                yield return new WaitForSeconds(0.50f);
+                NTR.SetActive(false);
+                PlusMinusCoinNitro.SetActive(false);
+                coins -= 10;
+                coinsText.text = coins.ToString();
+                PlayerPrefs.SetInt("coinN", coins);
+            }            
+        }
     }   
 
     private void OnTriggerEnter(Collider other)
