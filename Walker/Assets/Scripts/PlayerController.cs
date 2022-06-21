@@ -167,29 +167,23 @@ public class PlayerController : MonoBehaviour
                     FingerDown.SetActive(false);
                     swipedown = 1;                
             }
-            if (SwipeController.swipeLeft)
+            if (SwipeController.swipeLeft & swipeleft == 2)
             {
                 if (lineToMove >= -3)
                     lineToMove--;
-                swipeleft = 2;
-                if (swipeleft == 2)
-                {
+               
                     Time.timeScale = 1;
                     FingerLeft.SetActive(false);
-                    swipeleft = 1;
-                }
+                    swipeleft = 1;               
             }
-            if (SwipeController.swipeRight)
+            if (SwipeController.swipeRight & swiperight == 2)
             {
                 if (lineToMove <= 5)
                     lineToMove++;
-                swiperight = 2;
-                if (swiperight == 2)
-                {
+                
                     Time.timeScale = 1;
                     FingerRight.SetActive(false);
-                    swiperight = 1;
-                }
+                    swiperight = 1;                
             }            
         }
         if (preview > 2)
@@ -381,6 +375,8 @@ public class PlayerController : MonoBehaviour
         {
             lineToMove = 2;
         }
+
+
         if (other.gameObject.tag == "RPPL")
         {
             respawnplatform++;
@@ -396,18 +392,23 @@ public class PlayerController : MonoBehaviour
         }
         if (other.gameObject.tag == "studydown" & preview <= 2)
         {
+            swipedown = 2;
             Time.timeScale = 0;
             FingerDown.SetActive(true);
         }
         if (other.gameObject.tag == "studyleft" & preview <= 2)
         {
+            swipeleft = 2;
             Time.timeScale = 0;
             FingerLeft.SetActive(true);
         }
         if (other.gameObject.tag == "studyright" & preview <= 2)
         {
+            swiperight = 2;
             Time.timeScale = 0;
             FingerRight.SetActive(true);
         }
+        //на последнем свайпе добавь переход на превью два 2
+        //сам превью не забудь указать от количества либо от крашев
     }    
 }
