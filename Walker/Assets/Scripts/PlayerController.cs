@@ -147,36 +147,77 @@ public class PlayerController : MonoBehaviour
     }   
     private void Update()
     {
-        if (swipeup == 2)
+        if(preview <= 2)
         {
-            Time.timeScale = 1;
-            FingerUP.SetActive(false);
+            if (SwipeController.swipeUp & swipeup ==2)
+            {
+                if (controller.isGrounded)
+                    Jump();               
+                
+                    Time.timeScale = 1;
+                    FingerUP.SetActive(false);
+                    swipeup = 1;                
+            }
+            if (SwipeController.swipeDown & swipedown == 2)
+            {
+                if (controller.isGrounded)
+                    Flip();                
+                
+                    Time.timeScale = 1;
+                    FingerDown.SetActive(false);
+                    swipedown = 1;                
+            }
+            if (SwipeController.swipeLeft)
+            {
+                if (lineToMove >= -3)
+                    lineToMove--;
+                swipeleft = 2;
+                if (swipeleft == 2)
+                {
+                    Time.timeScale = 1;
+                    FingerLeft.SetActive(false);
+                    swipeleft = 1;
+                }
+            }
+            if (SwipeController.swipeRight)
+            {
+                if (lineToMove <= 5)
+                    lineToMove++;
+                swiperight = 2;
+                if (swiperight == 2)
+                {
+                    Time.timeScale = 1;
+                    FingerRight.SetActive(false);
+                    swiperight = 1;
+                }
+            }            
         }
-
-        if (SwipeController.swipeRight)
+        if (preview > 2)
         {
-            if (lineToMove <= 5)
-                lineToMove++;           
-        }
+            if (SwipeController.swipeRight)
+            {
+                if (lineToMove <= 5)
+                    lineToMove++;                
+            }
 
-        if (SwipeController.swipeLeft)
-        {
-            if (lineToMove >= -3)
-                lineToMove--;            
-        }
+            if (SwipeController.swipeLeft)
+            {
+                if (lineToMove >= -3)
+                    lineToMove--;
+            }
 
-        if (SwipeController.swipeUp)
-        {            
-            if (controller.isGrounded)
-                Jump();
-            swipeup = 2;
-        }
+            if (SwipeController.swipeUp)
+            {
+                if (controller.isGrounded)
+                    Jump();
+            }
 
-        if (SwipeController.swipeDown)
-        {
-            if (controller.isGrounded)
-                Flip();            
-        }
+            if (SwipeController.swipeDown)
+            {
+                if (controller.isGrounded)
+                    Flip();
+            }
+        }        
 
         if (controller.isGrounded)
             anim.SetTrigger("isRunning");           
@@ -345,10 +386,28 @@ public class PlayerController : MonoBehaviour
             respawnplatform++;
             PlayerPrefs.SetInt("respawnplatform", respawnplatform);
         }
+
+
         if (other.gameObject.tag == "study1" & preview <= 2)
         {
+            swipeup = 2;
             Time.timeScale = 0;
             FingerUP.SetActive(true);
+        }
+        if (other.gameObject.tag == "studydown" & preview <= 2)
+        {
+            Time.timeScale = 0;
+            FingerDown.SetActive(true);
+        }
+        if (other.gameObject.tag == "studyleft" & preview <= 2)
+        {
+            Time.timeScale = 0;
+            FingerLeft.SetActive(true);
+        }
+        if (other.gameObject.tag == "studyright" & preview <= 2)
+        {
+            Time.timeScale = 0;
+            FingerRight.SetActive(true);
         }
     }    
 }
