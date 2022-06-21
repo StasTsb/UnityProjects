@@ -4,6 +4,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.SceneManagement;
 
+
 public class PlayerController : MonoBehaviour
 {
     private CharacterController controller;
@@ -25,6 +26,7 @@ public class PlayerController : MonoBehaviour
     [SerializeField] private AudioSource backgroundmusic;
     [SerializeField] private AudioSource backgroundmusicloosepanel;
     [SerializeField] private AudioSource rocketsound;
+    [SerializeField] private AudioSource cautionsound;
 
     private AudioSource audioSource;
     public AudioSource countsound;
@@ -52,6 +54,13 @@ public class PlayerController : MonoBehaviour
 
     public GameObject PlusMinusCoinNitro;
 
+    private int preview;
+        
+    public GameObject FingerUP;
+    public GameObject FingerDown;
+    public GameObject FingerLeft;
+    public GameObject FingerRight;
+        
     void Start()
     {
         Time.timeScale = 1;
@@ -85,7 +94,13 @@ public class PlayerController : MonoBehaviour
         NTR.SetActive(false);
 
         PlusMinusCoinNitro.SetActive(false);
+        /////////
+        FingerUP.SetActive(false);
+        FingerDown.SetActive(false);
+        FingerLeft.SetActive(false);
+        FingerRight.SetActive(false);
 
+        /////////
         textTimeStart.text = timeStart.ToString("F2");
         timeRecord = PlayerPrefs.GetFloat("timerec");
 
@@ -117,32 +132,51 @@ public class PlayerController : MonoBehaviour
         Nitrobutton.SetActive(true);
 
         anim.GetComponent<Animator>().enabled = true;        
-        controller = GetComponent<CharacterController>();       
+        controller = GetComponent<CharacterController>();
+
+        if(preview <= 2)
+        {
+            //preview++;
+            StartCoroutine(StudyCoroutine());            
+        }        
+    }
+    IEnumerator StudyCoroutine()
+    {
+        yield return new WaitForSeconds(0.20f);
+        Time.timeScale = 0;
+        FingerUP.SetActive(true);
+        if (SwipeController.swipeUp)
+        {
+            Time.timeScale = 1;
+        }
+
+
+
     }
     private void Update()
     {        
         if (SwipeController.swipeRight)
         {
             if (lineToMove <= 5)
-                lineToMove++;
+                lineToMove++;           
         }
 
         if (SwipeController.swipeLeft)
         {
             if (lineToMove >= -3)
-                lineToMove--;
+                lineToMove--;            
         }
 
         if (SwipeController.swipeUp)
-        {
+        {            
             if (controller.isGrounded)
-                Jump();
+                Jump();            
         }
 
         if (SwipeController.swipeDown)
         {
             if (controller.isGrounded)
-                Flip();
+                Flip();            
         }
 
         if (controller.isGrounded)
@@ -190,7 +224,7 @@ public class PlayerController : MonoBehaviour
         else
             controller.Move(diff);
 
-        speed += 0.1f * Time.deltaTime;     
+        speed += 0.1f * Time.deltaTime;    
             
     }
     private void Jump()
@@ -234,7 +268,7 @@ public class PlayerController : MonoBehaviour
                 PlayerPrefs.SetInt("coinN", coins);
             }            
         }
-        else { backgroundmusicloosepanel.Play(); }
+        else { cautionsound.Play(); }
     }   
 
     private void OnTriggerEnter(Collider other)
