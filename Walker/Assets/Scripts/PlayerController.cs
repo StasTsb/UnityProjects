@@ -55,7 +55,11 @@ public class PlayerController : MonoBehaviour
     public GameObject PlusMinusCoinNitro;
 
     private int preview;
-        
+    private int swipeup;
+    private int swipedown;
+    private int swipeleft;
+    private int swiperight;
+
     public GameObject FingerUP;
     public GameObject FingerDown;
     public GameObject FingerLeft;
@@ -100,6 +104,12 @@ public class PlayerController : MonoBehaviour
         FingerLeft.SetActive(false);
         FingerRight.SetActive(false);
 
+        swipeup = 1;
+        swipedown = 1;
+        swipeleft = 1;
+        swiperight = 1;
+
+        preview = 1;
         /////////
         textTimeStart.text = timeStart.ToString("F2");
         timeRecord = PlayerPrefs.GetFloat("timerec");
@@ -132,29 +142,17 @@ public class PlayerController : MonoBehaviour
         Nitrobutton.SetActive(true);
 
         anim.GetComponent<Animator>().enabled = true;        
-        controller = GetComponent<CharacterController>();
-
-        if(preview <= 2)
-        {
-            //preview++;
-            StartCoroutine(StudyCoroutine());            
-        }        
-    }
-    IEnumerator StudyCoroutine()
+        controller = GetComponent<CharacterController>();   
+        
+    }   
+    private void Update()
     {
-        yield return new WaitForSeconds(0.20f);
-        Time.timeScale = 0;
-        FingerUP.SetActive(true);
-        if (SwipeController.swipeUp)
+        if (swipeup == 2)
         {
             Time.timeScale = 1;
+            FingerUP.SetActive(false);
         }
 
-
-
-    }
-    private void Update()
-    {        
         if (SwipeController.swipeRight)
         {
             if (lineToMove <= 5)
@@ -170,7 +168,8 @@ public class PlayerController : MonoBehaviour
         if (SwipeController.swipeUp)
         {            
             if (controller.isGrounded)
-                Jump();            
+                Jump();
+            swipeup = 2;
         }
 
         if (SwipeController.swipeDown)
@@ -345,6 +344,11 @@ public class PlayerController : MonoBehaviour
         {
             respawnplatform++;
             PlayerPrefs.SetInt("respawnplatform", respawnplatform);
+        }
+        if (other.gameObject.tag == "study1" & preview <= 2)
+        {
+            Time.timeScale = 0;
+            FingerUP.SetActive(true);
         }
     }    
 }
