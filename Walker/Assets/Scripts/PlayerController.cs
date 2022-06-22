@@ -64,7 +64,8 @@ public class PlayerController : MonoBehaviour
     public GameObject FingerDown;
     public GameObject FingerLeft;
     public GameObject FingerRight;
-        
+    public GameObject FingerNitro;
+
     void Start()
     {
         Time.timeScale = 1;
@@ -103,8 +104,9 @@ public class PlayerController : MonoBehaviour
         FingerDown.SetActive(false);
         FingerLeft.SetActive(false);
         FingerRight.SetActive(false);
+        FingerNitro.SetActive(false);
 
-        swipeup = 1;
+    swipeup = 1;
         swipedown = 1;
         swipeleft = 1;
         swiperight = 1;
@@ -139,7 +141,14 @@ public class PlayerController : MonoBehaviour
 
         countsound.Stop();
         Pausebutton.SetActive(true);
-        Nitrobutton.SetActive(true);
+        if (preview > 2)
+        { 
+            Nitrobutton.SetActive(true);        
+        }
+        else
+        {
+            Nitrobutton.SetActive(false);
+        }
 
         anim.GetComponent<Animator>().enabled = true;        
         controller = GetComponent<CharacterController>();   
@@ -299,8 +308,13 @@ public class PlayerController : MonoBehaviour
                 PlusMinusCoinNitro.SetActive(false);
                 coins -= 10;
                 coinsText.text = coins.ToString();
-                PlayerPrefs.SetInt("coinN", coins);
-            }            
+                PlayerPrefs.SetInt("coinN", coins);               
+            }
+            if (preview <= 2)
+            {
+                FingerNitro.SetActive(false);
+                Time.timeScale = 1;
+            }
         }
         else { cautionsound.Play(); }
     }   
@@ -407,6 +421,19 @@ public class PlayerController : MonoBehaviour
             swiperight = 2;
             Time.timeScale = 0;
             FingerRight.SetActive(true);
+                     
+        }
+        if (other.gameObject.tag == "studyNitro" & preview <= 2)
+        {
+            Nitrobutton.SetActive(true);
+            Time.timeScale = 0;
+            FingerNitro.SetActive(true);
+
+        }
+        if (other.gameObject.tag == "finalstudy" & preview <= 2)
+        {
+            preview = 3;
+            ///            
         }
         //на последнем свайпе добавь переход на превью два 2
         //сам превью не забудь указать от количества либо от крашев
