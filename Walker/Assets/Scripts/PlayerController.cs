@@ -99,14 +99,14 @@ public class PlayerController : MonoBehaviour
         NTR.SetActive(false);
 
         PlusMinusCoinNitro.SetActive(false);
-        /////////
+        
         FingerUP.SetActive(false);
         FingerDown.SetActive(false);
         FingerLeft.SetActive(false);
         FingerRight.SetActive(false);
         FingerNitro.SetActive(false);
 
-    swipeup = 1;
+        swipeup = 1;
         swipedown = 1;
         swipeleft = 1;
         swiperight = 1;
@@ -432,10 +432,8 @@ public class PlayerController : MonoBehaviour
         }
         if (other.gameObject.tag == "finalstudy" & preview <= 2)
         {
-            preview = 3;
-            ///            
-        }
-        //на последнем свайпе добавь переход на превью два 2
-        //сам превью не забудь указать от количества либо от крашев
+            preview = 3;            
+        }       
+        
     }    
 }
