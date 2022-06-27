@@ -26,7 +26,6 @@ public class PlayerController : MonoBehaviour
     [SerializeField] private AudioSource backgroundmusic;
     [SerializeField] private AudioSource backgroundmusicloosepanel;
     [SerializeField] private AudioSource rocketsound;
-    [SerializeField] private AudioSource cautionsound;
 
     private AudioSource audioSource;
     public AudioSource countsound;
@@ -68,6 +67,8 @@ public class PlayerController : MonoBehaviour
 
     void Start()
     {
+        preview = PlayerPrefs.GetInt("prevw");
+
         Time.timeScale = 1;
 
         anim = GetComponentInChildren<Animator>();
@@ -84,7 +85,12 @@ public class PlayerController : MonoBehaviour
 
         audioSource = GetComponent<AudioSource>();
         backgroundmusicloosepanel.Pause();
-        backgroundmusic.Play();        
+
+        int musicstatus = PlayerPrefs.GetInt("statusmus");
+        if (PlayerPrefs.GetInt("statusmus") == 0)
+        {
+            backgroundmusic.Play();
+        }        
 
         losePanel.SetActive(false);       
 
@@ -111,8 +117,6 @@ public class PlayerController : MonoBehaviour
         swipeleft = 1;
         swiperight = 1;
 
-        preview = 1;
-        /////////
         textTimeStart.text = timeStart.ToString("F2");
         timeRecord = PlayerPrefs.GetFloat("timerec");
 
@@ -141,14 +145,10 @@ public class PlayerController : MonoBehaviour
 
         countsound.Stop();
         Pausebutton.SetActive(true);
-        if (preview > 2)
+        if (preview < 0)
         { 
-            Nitrobutton.SetActive(true);        
-        }
-        else
-        {
-            Nitrobutton.SetActive(false);
-        }
+            Nitrobutton.SetActive(false);        
+        }        
 
         anim.GetComponent<Animator>().enabled = true;        
         controller = GetComponent<CharacterController>();   
@@ -156,7 +156,7 @@ public class PlayerController : MonoBehaviour
     }   
     private void Update()
     {
-        if(preview <= 2)
+        if(preview <= 0)
         {
             if (SwipeController.swipeUp & swipeup ==2)
             {
@@ -195,7 +195,7 @@ public class PlayerController : MonoBehaviour
                     swiperight = 1;                
             }            
         }
-        if (preview > 2)
+        if (preview > 0)
         {
             if (SwipeController.swipeRight)
             {
@@ -267,8 +267,8 @@ public class PlayerController : MonoBehaviour
         else
             controller.Move(diff);
 
-        speed += 0.1f * Time.deltaTime;    
-            
+        speed += 0.1f * Time.deltaTime;      
+
     }
     private void Jump()
     {
@@ -288,12 +288,26 @@ public class PlayerController : MonoBehaviour
 
         timeStart += Time.deltaTime;
         textTimeStart.text = timeStart.ToString("F2");
+
+        if (coins < 10)
+        {
+            Nitrobutton.SetActive(false);
+        }
+        else if (coins >= 10)
+        {
+            Nitrobutton.SetActive(true);
+        }
+
     }
 
     public void Nitro()
-    {        
-        if(coins >= 10) 
+    {
+        coins = PlayerPrefs.GetInt("coinN");
+        if (coins >= 10) 
         {
+            coins -= 10;
+            coinsText.text = coins.ToString();
+            PlayerPrefs.SetInt("coinN", coins);
             rocketsound.Play();
             StartCoroutine(NitroCoroutine());
             IEnumerator NitroCoroutine()
@@ -305,18 +319,15 @@ public class PlayerController : MonoBehaviour
                 speed -= 100;
                 yield return new WaitForSeconds(0.50f);
                 NTR.SetActive(false);
-                PlusMinusCoinNitro.SetActive(false);
-                coins -= 10;
-                coinsText.text = coins.ToString();
-                PlayerPrefs.SetInt("coinN", coins);               
+                PlusMinusCoinNitro.SetActive(false);               
+                yield return new WaitForSeconds(0.50f);
             }
-            if (preview <= 2)
+            if (preview <= 0)
             {
                 FingerNitro.SetActive(false);
                 Time.timeScale = 1;
             }
         }
-        else { cautionsound.Play(); }
     }   
 
     private void OnTriggerEnter(Collider other)
@@ -327,8 +338,8 @@ public class PlayerController : MonoBehaviour
             Pausebutton.SetActive(false);
             Nitrobutton.SetActive(false);
             Time.timeScale = 0;
-            backgroundmusic.Pause();
-            backgroundmusicloosepanel.Play();
+            backgroundmusic.Pause();          
+            backgroundmusicloosepanel.Play();            
         }
 
         if (other.gameObject.tag == "EndGameTime")
@@ -390,50 +401,49 @@ public class PlayerController : MonoBehaviour
             lineToMove = 2;
         }
 
-
         if (other.gameObject.tag == "RPPL")
         {
             respawnplatform++;
             PlayerPrefs.SetInt("respawnplatform", respawnplatform);
         }
 
-
-        if (other.gameObject.tag == "study1" & preview <= 2)
+        if (other.gameObject.tag == "study1" & preview <= 0)
         {
             swipeup = 2;
             Time.timeScale = 0;
             FingerUP.SetActive(true);
         }
-        if (other.gameObject.tag == "studydown" & preview <= 2)
+        if (other.gameObject.tag == "studydown" & preview <= 0)
         {
             swipedown = 2;
             Time.timeScale = 0;
             FingerDown.SetActive(true);
         }
-        if (other.gameObject.tag == "studyleft" & preview <= 2)
+        if (other.gameObject.tag == "studyleft" & preview <= 0)
         {
             swipeleft = 2;
             Time.timeScale = 0;
             FingerLeft.SetActive(true);
         }
-        if (other.gameObject.tag == "studyright" & preview <= 2)
+        if (other.gameObject.tag == "studyright" & preview <= 0)
         {
             swiperight = 2;
             Time.timeScale = 0;
             FingerRight.SetActive(true);
                      
         }
-        if (other.gameObject.tag == "studyNitro" & preview <= 2)
+        if (other.gameObject.tag == "studyNitro" & preview <= 0)
         {
             Nitrobutton.SetActive(true);
             Time.timeScale = 0;
             FingerNitro.SetActive(true);
 
         }
-        if (other.gameObject.tag == "finalstudy" & preview <= 2)
+        if (other.gameObject.tag == "finalstudy" & preview <= 0)
         {
-            preview = 3;            
-        }       
+            preview = 1;
+            PlayerPrefs.SetInt("prevw", preview);
+        }     
         
     }    
 }
