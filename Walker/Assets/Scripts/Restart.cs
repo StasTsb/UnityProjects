@@ -24,27 +24,44 @@ public class Restart : MonoBehaviour
     [SerializeField] private Transform respawnpoint8;
 
     [SerializeField] private AudioSource backgroundmusic;
-    [SerializeField] private AudioSource backgroundmusicloosepanel;
+    [SerializeField] private AudioSource pausemus;
     [SerializeField] private AudioSource buttonsound;
+    [SerializeField] private AudioSource rise;
 
     public GameObject Pausebutton;
+    public GameObject Nitrobutton;
+
+    public GameObject Nimb;
+
+    public GameObject FingerUP;
+    public GameObject FingerDown;
+    public GameObject FingerLeft;
+    public GameObject FingerRight;
+    public GameObject FingerNitro;
 
     public void Start()
     {
-       backgroundmusic.Play();
-       backgroundmusicloosepanel.Pause();
+        if (PlayerPrefs.GetInt("statusmus") == 0)
+        {
+            backgroundmusic.Play();
+        }       
+       pausemus.Stop();
        Pausebutton.SetActive(true);
+       Nitrobutton.SetActive(true);
+       rise.Stop();
+       Nimb.SetActive(false);
     }
     
     public void RestartLevel()
-    {   buttonsound.Play();
-        backgroundmusicloosepanel.Pause();        
+    {   
+        buttonsound.Play();
+        pausemus.Pause();        
         SceneManager.LoadScene(1);
     }
     public void RestartLevelDistance()
     {
         buttonsound.Play();
-        backgroundmusicloosepanel.Pause();
+        pausemus.Pause();
         SceneManager.LoadScene(4);
     }
     public void ToMenu()
@@ -57,18 +74,32 @@ public class Restart : MonoBehaviour
     {        
         PausePanel.SetActive(false);
         Pausebutton.SetActive(true);
+        Nitrobutton.SetActive(true);
         SceneManager.GetActiveScene();
-        Time.timeScale = 1;        
-        backgroundmusic.Play();
-        backgroundmusicloosepanel.Pause();
+        Time.timeScale = 1;
+        if (PlayerPrefs.GetInt("statusmus") == 0)
+        {
+            backgroundmusic.Play();
+        }       
+        pausemus.Pause();
     }
     public void Pause()
     {
         PausePanel.SetActive(true);
         Pausebutton.SetActive(false);
+        Nitrobutton.SetActive(false);
         Time.timeScale = 0;
         backgroundmusic.Pause();
-        backgroundmusicloosepanel.Play();        
+        if (PlayerPrefs.GetInt("statusmus") == 0)
+        {
+            pausemus.Play();
+        }
+
+        FingerUP.SetActive(false);
+        FingerDown.SetActive(false);
+        FingerLeft.SetActive(false);
+        FingerRight.SetActive(false);
+        FingerNitro.SetActive(false);
     }    
     public void Respawn()
     {
@@ -78,9 +109,22 @@ public class Restart : MonoBehaviour
         {
             LoosePanel.SetActive(false);
             Pausebutton.SetActive(true);
+            Nitrobutton.SetActive(true);
 
-            backgroundmusic.Play();
-            backgroundmusicloosepanel.Pause();
+            StartCoroutine(NitroCoroutine());
+            IEnumerator NitroCoroutine()
+            {
+                Nimb.SetActive(true);
+                yield return new WaitForSeconds(1);
+                Nimb.SetActive(false);
+            }
+            rise.Play();
+
+            if (PlayerPrefs.GetInt("statusmus") == 0)
+            {
+                backgroundmusic.Play();
+            }            
+            pausemus.Pause();
             health--;
             
             SceneManager.GetActiveScene();
